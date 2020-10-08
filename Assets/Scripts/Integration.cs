@@ -6,10 +6,10 @@ public static class Integration
 {
     public static int solve(int lower, int higher)
     {
-        Debug.Log("Lower: " + lower);
-        Debug.Log("Higher: " + higher);
+        //Debug.Log("Lower: " + lower);
+        //Debug.Log("Higher: " + higher);
 
-        int ans = (int)(((Mathf.Pow(higher, 2) / 2) - (3 * higher / 2)) - ((Mathf.Pow(lower, 2) / 2) - (3 * lower / 2)));
+        int ans = (int)((higher * (higher - 3) / 2) - (lower * (lower - 3) / 2));
         return ans;
     } 
 }
