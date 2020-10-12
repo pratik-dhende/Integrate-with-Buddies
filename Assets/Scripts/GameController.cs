@@ -32,7 +32,7 @@ public class GameController : MonoBehaviour
         f = new bool[totalPlayers];
 
         //Initialize path.
-        path = new GameObject[42];
+        path = new GameObject[43];
         SetPath();
 
         // Initialize no. of dices
@@ -75,31 +75,10 @@ public class GameController : MonoBehaviour
             {
                 Player player = players[currentPlayer].GetComponent<Player>();
 
-                // Get information of next tile.
-                int nextTileIndex; // = ((player.currentTile + userAns) + (player.qualified && (player.currentTile == player.QualifyingTile) ? 42 : 24)) % (player.qualified ? 42 : 24);
-
-                if (player.qualified){
-                    if (player.currentTile == player.QualifyingTile)
-                    {
-                        nextTileIndex = player.QualifyingTile;
-                    }
-                    else
-                    {
-                        // If he is on normal tiles.
-                        // If he is on inner hexagon.
-                        nextTileIndex = -1;
-                    }
-                }
-                else
-                {
-                    nextTileIndex = (player.currentTile + userAns) % 24;
-                }
-                //Debug.Log("NextTileIndex for " + currentPlayer + ": " + nextTileIndex);
+                int nextTileIndex = DecideNextTileIndex(player, userAns);
 
                 // Move Player to given pos.
                 MovePlayer(player, nextTileIndex);
-
-                Debug.Log("qualified" + (player.qualified));
 
                 // Deciding next turn.
                 DecideNextTurn(player);
@@ -120,10 +99,17 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void SetNextTurn(int player)
+    private void SetNextTurn()
     {
-        currentPlayer = player;
-        //Debug.Log("Current Player: " + currentPlayer);
+        currentPlayer = (currentPlayer + 1) % totalPlayers;
+
+        if (f[currentPlayer])
+        {
+            f[currentPlayer] = false;
+            Debug.Log(currentPlayer + " is flagged");
+            SetNextTurn();
+        }
+
     }
 
     private void SpawnPlayers()
@@ -164,10 +150,51 @@ public class GameController : MonoBehaviour
             }
         }
 
-        for(int i = 0; i < 42; i++)
+        path[42] = goalTile;
+
+        for(int i = 0; i < 43; i++)
         {
             path[i].GetComponent<Tile>().no = i;
         }
+    }
+
+    private int DecideNextTileIndex(Player player, int userAns)
+    {
+        int nextTileIndex; 
+
+        if (player.qualified)
+        {   
+            // Outer hexagon
+            if (player.currentTile < 24)
+            {
+                int dstQualify = (24 - (player.currentTile - player.QualifyingTile)) % 24;
+                if (dstQualify < userAns)
+                {
+                    nextTileIndex = player.InnerTile + userAns - (dstQualify + 1);
+                    //Debug.Log("Qualifying tile for player: " + currentPlayer + "is " + nextTileIndex);
+                }
+                else
+                {
+                    nextTileIndex = (player.currentTile + userAns) % 24;
+                }
+            }
+            // Inner hexagon.
+            else
+            {
+                nextTileIndex = (player.currentTile + userAns - 24) % 18 + 24;
+                // Win condition.
+                if (nextTileIndex - 1 == player.LastTile || (currentPlayer == 0 && nextTileIndex - 1 == 23))
+                {
+                    nextTileIndex = 42;
+                }
+            }
+        }
+        else
+        {
+            nextTileIndex = (player.currentTile + userAns) % 24;
+        }
+
+        return nextTileIndex;
     }
 
     private void MovePlayer(Player player, int nextTileIndex)
@@ -179,7 +206,7 @@ public class GameController : MonoBehaviour
         // Free the previous tile.
         Tile currentTile = path[player.currentTile].GetComponent<Tile>();
         currentTile.occupied = false;
-        currentTile.currentPlayer = currentPlayer;
+        currentTile.currentPlayer = -1;
 
         // Move the player to new tile.
         player.move(nextTile.transform.position);
@@ -208,39 +235,34 @@ public class GameController : MonoBehaviour
         dices[1].roll();
     }
 
-    // what if all players get at f.
     private void DecideNextTurn(Player player)
      {
         string tileType = player.tileType;
         if (tileType == "Chance")
         {
-            Debug.Log("Play Again.");
+            //Debug.Log("Play Again.");
         }
         else if (tileType == "F")
         {
             f[currentPlayer] = true;
-            Debug.Log("Lose Next turn.");
+
+            SetNextTurn();
+            Debug.Log("Current Player: " + currentPlayer);
+
+            //Debug.Log("Lose Next turn.");
         }
         else if (tileType == "Normal")
         {
-            SetNextTurn((currentPlayer + 1) % totalPlayers);
-
-            while (f[currentPlayer])
-            {
-                SetNextTurn((currentPlayer + 1) % totalPlayers);
-            }
+            SetNextTurn();
+            Debug.Log("Current Player: " + currentPlayer);
         }
         else if (tileType == "Home")
         {
-            SetNextTurn((currentPlayer + 1) % totalPlayers);
-
-            while (f[currentPlayer])
-            {
-                SetNextTurn((currentPlayer + 1) % totalPlayers);
-            }
-            Debug.Log("Safe");
+            SetNextTurn();
+            Debug.Log("Current Player: " + currentPlayer);
+            //Debug.Log("Safe");
         }
-        else if (tileType == "goal" && player.currentTile == player.GoalTile)
+        else if (tileType == "Goal" && player.currentTile == player.LastTile)
         {
             Debug.Log("Current player won the game.");
         }
