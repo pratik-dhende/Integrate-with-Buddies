@@ -646,6 +646,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalPlayers: 2
+  individualPlayers: 2
+  currentPlayerIndex: 0
+  subPlayerIndex: 0
   path:
   - {fileID: 0}
   - {fileID: 0}
@@ -690,7 +693,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  players:
+  playerPrefabs:
   - {fileID: 463584613}
   - {fileID: 997430800}
   - {fileID: 722325597}
@@ -2264,6 +2267,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 2Peg
+      objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2355,6 +2363,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 4Peg
       objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}
@@ -2667,6 +2680,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 5Peg
       objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}
@@ -3035,6 +3053,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 1Peg
       objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}
@@ -3863,6 +3886,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 3Peg
+      objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4165,8 +4193,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f2170b7fdb41740bd7e5979c9ca15c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  no: 0
   occupied: 0
-  currentPlayer: 0
+  currentPlayerIndex: 0
 --- !u!1001 &1554963033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5978,6 +6007,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661692781893318121, guid: 6c374779b2be4b74ebb6d3249e26fee5,
+        type: 3}
+      propertyPath: m_TagString
+      value: 0Peg
       objectReference: {fileID: 0}
     - target: {fileID: 2661692781893318122, guid: 6c374779b2be4b74ebb6d3249e26fee5,
         type: 3}

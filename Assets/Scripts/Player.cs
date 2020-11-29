@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public int no;
     public bool alive = false;
     public bool qualified = false;
 
@@ -22,13 +23,15 @@ public class Player : MonoBehaviour
     public int HomeTile { get { return homeTile; } }
 
     // Public functions -----------------------------------------------------------------------
-    public void SetPlayerTiles (int homeTileIndex)
+    public void SetPlayerTiles (int playerIndex, int subPlayerNo)
     {
-        innerTile = 24 + (homeTileIndex * 3);
-        qualifyingTile = (homeTileIndex == 0) ? 23 : ((homeTileIndex * 4) + 22) % 23;
+        no = playerIndex * 10 + subPlayerNo;
+
+        innerTile = 24 + (playerIndex * 3);
+        qualifyingTile = (playerIndex == 0) ? 23 : ((playerIndex * 4) + 22) % 23;
         lastTile = (innerTile - 1) > 24 ? (innerTile - 1) : 42;
-        currentTile = 4 * homeTileIndex;
-        homeTile = 4 * homeTileIndex;
+        currentTile = 4 * playerIndex;
+        homeTile = 4 * playerIndex;
 
         Debug.Log("Player: " + homeTile / 4);
         Debug.Log("     Inner Tile: " + innerTile);
@@ -48,6 +51,5 @@ public class Player : MonoBehaviour
         this.currentTile = currentTile;
         this.tileType = tileType;
         this.alive = alive;
-        this.qualified = qualified;
     }
 }

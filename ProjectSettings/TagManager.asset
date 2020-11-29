@@ -9,6 +9,12 @@ TagManager:
   - F
   - Chance
   - Goal
+  - 0Peg
+  - 1Peg
+  - 2Peg
+  - 3Peg
+  - 4Peg
+  - 5Peg
   layers:
   - Default
   - TransparentFX
