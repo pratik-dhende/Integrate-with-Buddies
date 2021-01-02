@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Tile : MonoBehaviour
+public class Tile : NetworkBehaviour
 {
-    public int no;
-    string type;
-    public bool occupied;
-    int tilePlayers;
-    public int currentPlayerIndex;
+    [SyncVar]public int no;
+    [SyncVar] string type;
+    [SyncVar] public bool occupied;
+    [SyncVar] int tilePlayers;
+    [SyncVar] public int currentPlayerIndex;
 
     public int TilePlayers { get { return tilePlayers; } }
 

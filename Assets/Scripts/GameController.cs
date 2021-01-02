@@ -5,14 +5,14 @@ using UnityEngine.UI;
 using TMPro;
 
 public class GameController : MonoBehaviour
-{   
+{
     [SerializeField] int totalPlayers;
     [SerializeField] int individualPlayers;
 
-    [SerializeField]int currentPlayerIndex;
+    [SerializeField] int currentPlayerIndex;
     //[SerializeField]int subPlayerIndex;
     int[] subPlayerIndices;
-    Dice[] dices;
+    Dices dices;
     bool[,] f;
 
     [SerializeField] GameObject[] path;
@@ -44,15 +44,13 @@ public class GameController : MonoBehaviour
         //Initialize players.
         players = new GameObject[totalPlayers, individualPlayers];
         subPlayerIndices = new int[totalPlayers];
-        for(int i = 0; i < totalPlayers; i++)
+        for (int i = 0; i < totalPlayers; i++)
         {
             subPlayerIndices[i] = 0;
         }
 
         // Initialize no. of dices
-        dices = new Dice[2];
-        dices[0] = new Dice();
-        dices[1] = new Dice();
+        dices = new Dices();
 
         // Spawn total players.
         SpawnPlayers();
@@ -64,7 +62,7 @@ public class GameController : MonoBehaviour
     // Main Loop -----------------------------------------------------------------------------------
 
     private void Update()
-    {   
+    {
         if (!gameOver)
         {
             Inputs();
@@ -78,10 +76,10 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown("return") && integrationInputField.text != "")
         {
             // Solve the integration.
-            int lower = Mathf.Min(dices[0].CurrentNo, dices[1].CurrentNo);
-            int higher = Mathf.Max(dices[0].CurrentNo, dices[1].CurrentNo);
+            int lower = Mathf.Min(dices.no1, dices.no2);
+            int higher = Mathf.Max(dices.no1, dices.no2);
 
-            int ans = Integration.solve(lower, higher);
+            //int ans = Integration.solve(lower, higher);
             //Debug.Log("Correct Ans: " + ans);
 
             int userAns = int.Parse(integrationInputField.text);
@@ -114,8 +112,8 @@ public class GameController : MonoBehaviour
             // Roll dices.
             RollDices();
 
-            Debug.Log("Dice 1: " + dices[0].CurrentNo);
-            Debug.Log("Dice 2: " + dices[1].CurrentNo);
+            //Debug.Log("Dice 1: " + dices[0].CurrentNo);
+            //Debug.Log("Dice 2: " + dices[1].CurrentNo);
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -132,7 +130,7 @@ public class GameController : MonoBehaviour
 
                     // When a peg reaches goal tile it can't be moved.
                     if (currentPlayer.GetComponent<Player>().tileType != "Goal")
-                    {   
+                    {
                         subPlayerIndices[currentPlayerIndex] = currentPlayer.GetComponent<Player>().no % 10;
                     }
                     //Debug.Log("Player chosen: " + (currentPlayerIndex * 10 + subPlayerIndices[currentPlayerIndex]));
@@ -157,12 +155,12 @@ public class GameController : MonoBehaviour
     private void SpawnPlayers()
     {
         // Spawn the available players.
-        for(int i = 0; i < totalPlayers; i++)
+        for (int i = 0; i < totalPlayers; i++)
         {
             for (int j = 0; j < individualPlayers; j++)
             {
                 players[i, j] = Instantiate(playerPrefabs[i], playerPrefabs[i].transform.position, Quaternion.identity);
-                players[i, j].GetComponent<Player>().SetPlayerTiles(i, j);
+                players[i, j].GetComponent<Player>().SetPlayerTilesLocal(i, j);
                 players[i, j].SetActive(true);
             }
             //players[i].SetActive(true);
@@ -171,16 +169,16 @@ public class GameController : MonoBehaviour
     }
 
     private void SetPath()
-    {   
+    {
         int hTp = currentPlayerIndex;
         int nTp = 0;
         int fTp = 0;
         int cTp = 0;
 
-        for(int i = 0; i < 42;)
-        {   
+        for (int i = 0; i < 42;)
+        {
             // Outer hexagon.
-            if (cTp < 6  && i < 24)
+            if (cTp < 6 && i < 24)
             {
                 path[i] = homeTiles[hTp++];
                 path[i + 1] = normalTiles[nTp++];
@@ -200,7 +198,7 @@ public class GameController : MonoBehaviour
 
         path[42] = goalTile;
 
-        for(int i = 0; i < 43; i++)
+        for (int i = 0; i < 43; i++)
         {
             path[i].GetComponent<Tile>().no = i;
         }
@@ -211,7 +209,7 @@ public class GameController : MonoBehaviour
         int nextTileIndex;
 
         if (player.qualified)
-        {   
+        {
             // Outer hexagon
             if (player.currentTile < 24)
             {
@@ -274,21 +272,21 @@ public class GameController : MonoBehaviour
         // Move the player to new tile.
         player.move(nextTile.transform.position);
 
-           //--Update the new tile.
+        //--Update the new tile.
         Tile tile = nextTile.GetComponent<Tile>();
 
         //Debug.Log("tile.occupied: " + tile.occupied);
         //Debug.Log("tile.tag: " + tile.tag);
         //Debug.Log("is Same: " + tile.currentPlayerIndex);
 
-           //--Check if it killed someone.
+        //--Check if it killed someone.
         if (tile.occupied && tile.tag != "Home" && ((int)(tile.currentPlayerIndex / 10) != currentPlayerIndex))
-        {   
+        {
             Player tilePlayer = players[(int)(tile.currentPlayerIndex / 10), tile.currentPlayerIndex % 10].GetComponent<Player>();
             MovePlayer(tilePlayer, tilePlayer.HomeTile);
 
             // Qualify them to go into inner hexagon.
-            for(int i = 0; i < individualPlayers; i++)
+            for (int i = 0; i < individualPlayers; i++)
             {
                 players[currentPlayerIndex, i].GetComponent<Player>().qualified = true;
             }
@@ -303,12 +301,11 @@ public class GameController : MonoBehaviour
 
     private void RollDices()
     {
-        dices[0].roll();
-        dices[1].roll();
+        dices.roll();
     }
 
     private void DecideNextTurn(Player player)
-     {
+    {
         string tileType = player.tileType;
         if (tileType == "Chance")
         {
@@ -335,7 +332,7 @@ public class GameController : MonoBehaviour
             //Debug.Log("Safe");
         }
         else if (tileType == "Goal" && player.currentTile == player.LastTile && goalTile.GetComponent<Tile>().TilePlayers == individualPlayers)
-        {   
+        {
             Debug.Log("Current player won the game.");
             gameOver = true;
         }

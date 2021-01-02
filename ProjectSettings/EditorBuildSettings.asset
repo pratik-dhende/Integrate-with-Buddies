@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: a4b0f1c697d867642900ecd84e317466
+  - enabled: 1
+    path: Assets/Scenes/CreateJoinServerScene.unity
+    guid: ed82ed620182fc640b32377388d85fc5
+  - enabled: 1
+    path: Assets/Scenes/RoomScene.unity
+    guid: 68b96c393ec55124b9629b3ad8d8fc6f
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
